@@ -66,8 +66,6 @@ def calcular_idade_falecimento(idade_input, doenca_input, historico_input):
         sistema.compute()
         idade_falecimento_output = sistema.output['idade_falecimento']
         idade_falecimento_output = max(idade_falecimento_output, idade_input)
-
-        # Ajuste para histórico de saúde
         if historico_input >= 7:
             idade_falecimento_output += 20  # Adiciona 20 anos se o histórico de saúde for 7 ou mais
     except KeyError:
@@ -133,23 +131,27 @@ saude_input = obter_entrada_usuario(
     {0: "Muito ruim - Múltiplas condições de saúde graves", 
      3: "Ruim - Algumas condições de saúde significativas", 
      5: "Regular - Condições de saúde controladas", 
-     7: "Bom - Geralmente saudável",
-     10: "Excelente - Muito saudável"}
+     7: "Bom - Poucas preocupações de saúde", 
+     10: "Excelente - Sem problemas de saúde significativos"}
 )
 
 historico_input = obter_entrada_usuario(
-    "Como você avalia o histórico de saúde familiar?",
+    "Como você avalia o histórico familiar de saúde da pessoa?",
     0, 10,
-    {0: "Excelente - Nenhuma condição de saúde significativa na família", 
-     4: "Bom - Algumas condições leves na família", 
-     6: "Regular - Várias condições de saúde na família", 
-     10: "Ruim - Muitas condições de saúde na família"}
+    {0: "Muito ruim - Múltiplas doenças hereditárias graves", 
+     3: "Ruim - Histórico significativo de doenças", 
+     5: "Regular - Algumas doenças na família", 
+     7: "Bom - Poucas doenças familiares", 
+     10: "Excelente - Sem doenças hereditárias significativas"}
 )
 
+# Calcular idade de falecimento
 idade_falecimento_prevista = calcular_idade_falecimento(idade_input, saude_input, historico_input)
-valor_mensal = calcular_valor_plano(idade_input, idade_falecimento_prevista)
+print(f"\n{nome}, a idade de falecimento prevista é de {idade_falecimento_prevista:.2f} anos.")
 
-print(f"\nA idade prevista de falecimento para {nome} é: {idade_falecimento_prevista:.0f} anos.")
-print(f"O valor mensal do plano funerário para {nome} é: R$ {valor_mensal:.2f}.")
+# Calcular valor do plano
+valor_plano_mensal = calcular_valor_plano(idade_input, idade_falecimento_prevista)
+print(f"O valor mensal do plano funerário será de R${valor_plano_mensal:.2f} por mês.")
 
+# Plotar pertinência da idade de falecimento
 plotar_pertinencia_idade_falecimento(idade_falecimento_prevista)
