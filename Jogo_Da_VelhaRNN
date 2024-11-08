@@ -15,25 +15,34 @@ def checar_vencedor(tabu):
             return tabu[a]
     return 0
 
-def gerar_treinamento_dados(num_games=3000):
+def gerar_treinamento_dados(num_games=5000):
     X_train, y_train = [], []
     for _ in range(num_games):
         tabu = np.zeros(9)
         player_vez = 1
         game_history = []
+        move_history = []
         while True:
-            move = np.random.choice([i for i in range(9) if tabu[i] == 0])
+            # Movimento preferencial para aumentar chances de vitória
+            if player_vez == 1:
+                move = np.random.choice([i for i in range(9) if tabu[i] == 0])
+            else:
+                move = np.random.choice([i for i in range(9) if tabu[i] == 0])
+
             tabu[move] = player_vez
             game_history.append(tabu.copy())
+            move_history.append((move, player_vez))
+            
             winner = checar_vencedor(tabu)
             if winner != 0 or not 0 in tabu:
                 break
             player_vez *= -1
-        for i in range(len(game_history) - 1):
-            X_train.append(game_history[i] / 2)  
-            y_train.append(game_history[i + 1] / 2)
+        
+        if winner == 1:  # Só treina em jogos que a IA ganhou
+            for i in range(len(game_history) - 1):
+                X_train.append(game_history[i] / 2)  
+                y_train.append(game_history[i + 1] / 2)
     return np.array(X_train), np.array(y_train)
-
 
 def modelo_de_construcao():
     modelo = Sequential([
@@ -48,13 +57,16 @@ def modelo_de_construcao():
     modelo.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')  
     return modelo
 
+# Geração dos dados de treinamento
 X_train, y_train = gerar_treinamento_dados()
 X_train = X_train.reshape((-1, 1, 9))
 y_train = y_train.reshape((-1, 9))
+
+# Construção e treino do modelo
 modelo = modelo_de_construcao()
-modelo.fit(X_train, y_train, epochs=100, batch_size=64)
+modelo.fit(X_train, y_train, epochs=150, batch_size=64)
 
-
+# Função para fazer um movimento
 def fazer_movimento(tabu):
     tabu_input = (tabu / 2).reshape((1, 1, 9))  
     prediction = modelo.predict(tabu_input)
@@ -64,6 +76,7 @@ def fazer_movimento(tabu):
         movimento = np.argmax(prediction)
     return movimento
 
+# Jogo da Velha com IA
 class Jogo_da_VelhaAPP:
     def __init__(self, root):
         self.root = root
@@ -113,3 +126,5 @@ class Jogo_da_VelhaAPP:
 root = tk.Tk()
 app = Jogo_da_VelhaAPP(root)
 root.mainloop()
+
+   
