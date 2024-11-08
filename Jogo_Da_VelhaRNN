@@ -82,7 +82,7 @@ class Jogo_da_VelhaAPP:
     def movimento_usuario(self, index):
         if self.tabu[index] == 0:
             self.tabu[index] = -1
-            self.buttons[index].config(text="X", state="desativado")
+            self.buttons[index].config(text="X", state="disabled")
             winner = checar_vencedor(self.tabu)
             if winner == -1:
                 messagebox.showinfo("Fim do Jogo", "Você venceu!")
@@ -96,7 +96,7 @@ class Jogo_da_VelhaAPP:
     def ai_movimento(self):
         movimento = fazer_movimento(self.tabu)
         self.tabu[movimento] = 1
-        self.buttons[movimento].config(text="O", state="desativado")
+        self.buttons[movimento].config(text="O", state="disabled")
         winner = checar_vencedor(self.tabu)
         if winner == 1:
             messagebox.showinfo("Fim do Jogo", "A IA venceu!")
