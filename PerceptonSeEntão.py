@@ -20,7 +20,7 @@ def perceptron_implication(x1, x2, w1=-1, w2=1, theta=0):
         return 0
 
 # Testando a função
-print(perceptron_implication(0, 0))  # Esperado: 1 (0 implica 0)
-print(perceptron_implication(0, 1))  # Esperado: 1 (0 implica 1)
-print(perceptron_implication(1, 0))  # Esperado: 0 (1 implica 0)
-print(perceptron_implication(1, 1))  # Esperado: 1 (1 implica 1)
+print(perceptron_implication(0, 0)) 
+print(perceptron_implication(0, 1))  
+print(perceptron_implication(1, 0))  
+print(perceptron_implication(1, 1))  
