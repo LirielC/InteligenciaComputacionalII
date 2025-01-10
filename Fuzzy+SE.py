@@ -3,35 +3,28 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
 
-# Variáveis de entrada
 idade = ctrl.Antecedent(np.arange(0, 101, 1), 'idade')
 doenca_normal = ctrl.Antecedent(np.arange(0, 11, 1), 'doenca_normal')
 historico_familiar = ctrl.Antecedent(np.arange(0, 11, 1), 'historico_familiar')
 
-# Variável de saída
 idade_falecimento = ctrl.Consequent(np.arange(0, 121, 1), 'idade_falecimento')
 
-# Funções de pertinência para idade
 idade['jovem'] = fuzz.trimf(idade.universe, [0, 0, 35])
 idade['adulto'] = fuzz.trimf(idade.universe, [25, 50, 75])
 idade['idoso'] = fuzz.trimf(idade.universe, [65, 100, 100])
 
-# Funções de pertinência para doença normal (0-10, onde 0 é saudável e 10 é muito doente)
 doenca_normal['saudavel'] = fuzz.trimf(doenca_normal.universe, [0, 0, 3])
 doenca_normal['moderada'] = fuzz.trimf(doenca_normal.universe, [2, 5, 8])
 doenca_normal['grave'] = fuzz.trimf(doenca_normal.universe, [7, 10, 10])
 
-# Funções de pertinência para histórico familiar (0-10, onde 0 é excelente e 10 é ruim)
 historico_familiar['bom'] = fuzz.trimf(historico_familiar.universe, [0, 0, 4])
 historico_familiar['medio'] = fuzz.trimf(historico_familiar.universe, [3, 5, 7])
 historico_familiar['ruim'] = fuzz.trimf(historico_familiar.universe, [6, 10, 10])
 
-# Funções de pertinência para idade de falecimento
 idade_falecimento['precoce'] = fuzz.trimf(idade_falecimento.universe, [0, 50, 70])
 idade_falecimento['normal'] = fuzz.trimf(idade_falecimento.universe, [60, 80, 90])
 idade_falecimento['tardia'] = fuzz.trimf(idade_falecimento.universe, [85, 100, 120])
 
-# Regras
 regra1 = ctrl.Rule(idade['jovem'] & doenca_normal['saudavel'] & historico_familiar['bom'], idade_falecimento['tardia'])
 regra2 = ctrl.Rule(idade['adulto'] & doenca_normal['moderada'] & historico_familiar['medio'], idade_falecimento['normal'])
 regra3 = ctrl.Rule(idade['idoso'] & doenca_normal['grave'] & historico_familiar['ruim'], idade_falecimento['precoce'])
@@ -53,7 +46,6 @@ regra18 = ctrl.Rule(idade['adulto'] & doenca_normal['grave'] & historico_familia
 regra19 = ctrl.Rule(idade['idoso'] & doenca_normal['saudavel'] & historico_familiar['medio'], idade_falecimento['tardia'])
 regra20 = ctrl.Rule(idade['jovem'] & doenca_normal['saudavel'] & historico_familiar['medio'], idade_falecimento['tardia'])
 
-# Sistema de controle
 sistema_ctrl = ctrl.ControlSystem([regra1, regra2, regra3, regra4, regra5, regra6, regra7, regra8, regra9, regra10,
                                    regra11, regra12, regra13, regra14, regra15, regra16, regra17, regra18, regra19, regra20])
 
@@ -87,17 +79,14 @@ def plotar_pertinencia_idade_falecimento(idade_prevista):
 
     plt.show()
 
-# Entrada do usuário
 nome = input("Digite o nome da pessoa: ")
 idade_input = float(input("Digite a idade da pessoa: "))
 doenca_input = float(input("Digite o nível de doença (0-10, onde 0 é saudável e 10 é muito doente): "))
 historico_input = float(input("Digite o histórico familiar de doenças (0-10, onde 0 é excelente e 10 é ruim): "))
 
-# Cálculo e exibição dos resultados
 idade_prevista = calcular_idade_falecimento(idade_input, doenca_input, historico_input)
 print(f"\nResultados para {nome}:")
 print(f"Idade atual: {idade_input:.0f} anos")
 print(f"Idade prevista de falecimento: {idade_prevista:.2f} anos")
 
-# Plotagem do gráfico de pertinência
 plotar_pertinencia_idade_falecimento(idade_prevista)
