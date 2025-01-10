@@ -20,7 +20,7 @@ def perceptron_and(x1, x2, w1=1, w2=1, bias=-1.5):
   return step_function(sum)
 
 if __name__ == "__main__":
-  # Testa todas as combinações de entrada
+
   for x1 in [0, 1]:
     for x2 in [0, 1]:
       output = perceptron_and(x1, x2)
