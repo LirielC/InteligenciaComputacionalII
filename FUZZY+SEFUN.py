@@ -3,35 +3,28 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
 
-# Variáveis de entrada
 idade = ctrl.Antecedent(np.arange(0, 101, 1), 'idade')
 doenca_normal = ctrl.Antecedent(np.arange(0, 11, 1), 'doenca_normal')
 historico_familiar = ctrl.Antecedent(np.arange(0, 11, 1), 'historico_familiar')
 
-# Variável de saída
 idade_falecimento = ctrl.Consequent(np.arange(0, 121, 1), 'idade_falecimento')
 
-# Funções de pertinência para idade
 idade['jovem'] = fuzz.trimf(idade.universe, [0, 0, 30])
 idade['adulto'] = fuzz.trimf(idade.universe, [25, 50, 75])
 idade['idoso'] = fuzz.trimf(idade.universe, [65, 80, 100])
 
-# Funções de pertinência para doença normal (0-10, onde 0 é saudável e 10 é muito doente)
 doenca_normal['saudavel'] = fuzz.trimf(doenca_normal.universe, [0, 0, 3])
 doenca_normal['moderada'] = fuzz.trimf(doenca_normal.universe, [2, 5, 8])
 doenca_normal['grave'] = fuzz.trimf(doenca_normal.universe, [7, 10, 10])
 
-# Funções de pertinência para histórico familiar (0-10, onde 0 é excelente e 10 é ruim)
 historico_familiar['bom'] = fuzz.trimf(historico_familiar.universe, [0, 0, 4])
 historico_familiar['medio'] = fuzz.trimf(historico_familiar.universe, [3, 5, 7])
 historico_familiar['ruim'] = fuzz.trimf(historico_familiar.universe, [6, 10, 10])
 
-# Funções de pertinência atualizadas para idade de falecimento
 idade_falecimento['precoce'] = fuzz.trimf(idade_falecimento.universe, [0, 45, 65])
 idade_falecimento['normal'] = fuzz.trimf(idade_falecimento.universe, [60, 75, 90])
 idade_falecimento['tardia'] = fuzz.trimf(idade_falecimento.universe, [85, 100, 120])
 
-# Regras
 regra1 = ctrl.Rule(idade['jovem'] & doenca_normal['saudavel'] & historico_familiar['bom'], idade_falecimento['tardia'])
 regra2 = ctrl.Rule(idade['adulto'] & doenca_normal['moderada'] & historico_familiar['medio'], idade_falecimento['normal'])
 regra3 = ctrl.Rule(idade['idoso'] & doenca_normal['grave'] & historico_familiar['ruim'], idade_falecimento['precoce'])
@@ -43,7 +36,6 @@ regra8 = ctrl.Rule(idade['jovem'] & doenca_normal['moderada'] & historico_famili
 regra9 = ctrl.Rule(idade['adulto'] & doenca_normal['grave'] & historico_familiar['ruim'], idade_falecimento['precoce'])
 regra10 = ctrl.Rule(idade['idoso'] & doenca_normal['moderada'] & historico_familiar['medio'], idade_falecimento['normal'])
 
-# Sistema de controle
 sistema_ctrl = ctrl.ControlSystem([regra1, regra2, regra3, regra4, regra5, regra6, regra7, regra8, regra9, regra10])
 
 def calcular_idade_falecimento(idade_input, doenca_input, historico_input):
@@ -52,11 +44,9 @@ def calcular_idade_falecimento(idade_input, doenca_input, historico_input):
     sistema.input['doenca_normal'] = doenca_input
     sistema.input['historico_familiar'] = historico_input
 
-    # Computar o sistema
     try:
         sistema.compute()
         idade_falecimento_output = sistema.output['idade_falecimento']
-        # Garantir que a idade de falecimento não seja menor que a idade atual
         idade_falecimento_output = max(idade_falecimento_output, idade_input)
     except KeyError:
         print("Erro: Não foi possível calcular a idade de falecimento.")
@@ -68,15 +58,14 @@ def calcular_idade_falecimento(idade_input, doenca_input, historico_input):
 def calcular_valor_plano(idade_atual, idade_falecimento_prevista, taxa_anual=5000):
     anos_restantes = max(0, idade_falecimento_prevista - idade_atual)
 
-    if anos_restantes < 1:  # Se a previsão de falecimento for no mesmo ano
-        valor_mensal = (taxa_anual * 1.7) / 12  # Aumento de 70%
+     valor_mensal = (taxa_anual * 1.7) / 12    if anos_restantes < 1:  
     elif anos_restantes > 0:
         valor_total = taxa_anual * anos_restantes
         valor_mensal = valor_total / (anos_restantes * 12)
     else:
-        valor_mensal = taxa_anual / 12  # Valor mínimo mensal se não houver anos restantes
+        valor_mensal = taxa_anual / 12 
 
-    return valor_mensal  # Certificando-se de que há um retorno fora do bloco condicional
+    return valor_mensal  
 
 
 
@@ -104,13 +93,12 @@ def plotar_pertinencia_idade_falecimento(idade_prevista):
 
     plt.show()
 
-# Entrada do usuário
+
 nome = input("Digite o nome da pessoa: ")
 idade_input = float(input("Digite a idade da pessoa: "))
 doenca_input = float(input("Digite o nível de doença (0-10, onde 0 é saudável e 10 é muito doente): "))
 historico_input = float(input("Digite o histórico familiar de doenças (0-10, onde 0 é excelente e 10 é ruim): "))
 
-# Cálculo e exibição dos resultados
 idade_prevista = calcular_idade_falecimento(idade_input, doenca_input, historico_input)
 
 if idade_prevista:
@@ -123,7 +111,6 @@ if idade_prevista:
     if idade_prevista - idade_input < 1:
         print("AVISO: O valor do plano funerário foi aumentado em 70% devido à previsão de falecimento no mesmo ano. E o restante do valor será parcelado mensalmente")
 
-#Codigo com melhor interação com o usuário
 
 import numpy as np
 import skfuzzy as fuzz
@@ -140,35 +127,33 @@ def obter_entrada_usuario(pergunta, min_val, max_val, opcoes):
         entrada = float(input(f"Escolha um valor entre {min_val} e {max_val}: "))
     return entrada
 
-# Variáveis de entrada
+
 idade = ctrl.Antecedent(np.arange(0, 101, 1), 'idade')
 doenca_normal = ctrl.Antecedent(np.arange(0, 11, 1), 'doenca_normal')
 historico_familiar = ctrl.Antecedent(np.arange(0, 11, 1), 'historico_familiar')
 
-# Variável de saída
 idade_falecimento = ctrl.Consequent(np.arange(0, 121, 1), 'idade_falecimento')
 
-# Funções de pertinência para idade
+
 idade['jovem'] = fuzz.trimf(idade.universe, [0, 0, 30])
 idade['adulto'] = fuzz.trimf(idade.universe, [25, 50, 75])
 idade['idoso'] = fuzz.trimf(idade.universe, [65, 80, 100])
 
-# Funções de pertinência para doença normal (0-10, onde 0 é saudável e 10 é muito doente)
+
 doenca_normal['saudavel'] = fuzz.trimf(doenca_normal.universe, [0, 0, 3])
 doenca_normal['moderada'] = fuzz.trimf(doenca_normal.universe, [2, 5, 8])
 doenca_normal['grave'] = fuzz.trimf(doenca_normal.universe, [7, 10, 10])
 
-# Funções de pertinência para histórico familiar (0-10, onde 0 é excelente e 10 é ruim)
+
 historico_familiar['bom'] = fuzz.trimf(historico_familiar.universe, [0, 0, 4])
 historico_familiar['medio'] = fuzz.trimf(historico_familiar.universe, [3, 5, 7])
 historico_familiar['ruim'] = fuzz.trimf(historico_familiar.universe, [6, 10, 10])
 
-# Funções de pertinência para idade de falecimento
+
 idade_falecimento['precoce'] = fuzz.trimf(idade_falecimento.universe, [0, 45, 65])
 idade_falecimento['normal'] = fuzz.trimf(idade_falecimento.universe, [60, 75, 90])
 idade_falecimento['tardia'] = fuzz.trimf(idade_falecimento.universe, [85, 100, 120])
 
-# Regras
 regra1 = ctrl.Rule(idade['jovem'] & doenca_normal['saudavel'] & historico_familiar['bom'], idade_falecimento['tardia'])
 regra2 = ctrl.Rule(idade['adulto'] & doenca_normal['moderada'] & historico_familiar['medio'], idade_falecimento['normal'])
 regra3 = ctrl.Rule(idade['idoso'] & doenca_normal['grave'] & historico_familiar['ruim'], idade_falecimento['precoce'])
@@ -180,7 +165,7 @@ regra8 = ctrl.Rule(idade['jovem'] & doenca_normal['moderada'] & historico_famili
 regra9 = ctrl.Rule(idade['adulto'] & doenca_normal['grave'] & historico_familiar['ruim'], idade_falecimento['precoce'])
 regra10 = ctrl.Rule(idade['idoso'] & doenca_normal['moderada'] & historico_familiar['medio'], idade_falecimento['normal'])
 
-# Sistema de controle
+
 sistema_ctrl = ctrl.ControlSystem([regra1, regra2, regra3, regra4, regra5, regra6, regra7, regra8, regra9, regra10])
 
 def calcular_idade_falecimento(idade_input, doenca_input, historico_input):
@@ -233,7 +218,7 @@ def plotar_pertinencia_idade_falecimento(idade_prevista):
 
     plt.show()
 
-# Entrada do usuário
+
 nome = input("Digite o nome da pessoa: ")
 
 idade_input = obter_entrada_usuario(
@@ -270,19 +255,19 @@ historico_input = obter_entrada_usuario(
      10: "Excelente - Sem doenças hereditárias significativas"}
 )
 
-# Calcular idade de falecimento
+
 idade_falecimento_prevista = calcular_idade_falecimento(idade_input, saude_input, historico_input)
 print(f"\n{nome}, a idade de falecimento prevista é de {idade_falecimento_prevista:.2f} anos.")
 
-# Calcular valor do plano
+
 valor_plano_mensal = calcular_valor_plano(idade_input, idade_falecimento_prevista)
 print(f"O valor mensal do plano funerário será de R${valor_plano_mensal:.2f} por mês.")
 
-# Plotar pertinência da idade de falecimento
+
 plotar_pertinencia_idade_falecimento(idade_falecimento_prevista)
 
 
-    # Plotagem do gráfico de pertinência
+
     plotar_pertinencia_idade_falecimento(idade_prevista)
 else:
     print("Erro no cálculo da idade de falecimento. Verifique as entradas.")
