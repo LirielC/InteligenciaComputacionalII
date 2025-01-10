@@ -23,7 +23,6 @@ def gerar_treinamento_dados(num_games=5000):
         game_history = []
         move_history = []
         while True:
-            # Movimento preferencial para aumentar chances de vitória
             if player_vez == 1:
                 move = np.random.choice([i for i in range(9) if tabu[i] == 0])
             else:
@@ -38,7 +37,7 @@ def gerar_treinamento_dados(num_games=5000):
                 break
             player_vez *= -1
         
-        if winner == 1:  # Só treina em jogos que a IA ganhou
+        if winner == 1:  
             for i in range(len(game_history) - 1):
                 X_train.append(game_history[i] / 2)  
                 y_train.append(game_history[i + 1] / 2)
@@ -57,16 +56,16 @@ def modelo_de_construcao():
     modelo.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')  
     return modelo
 
-# Geração dos dados de treinamento
+
 X_train, y_train = gerar_treinamento_dados()
 X_train = X_train.reshape((-1, 1, 9))
 y_train = y_train.reshape((-1, 9))
 
-# Construção e treino do modelo
+
 modelo = modelo_de_construcao()
 modelo.fit(X_train, y_train, epochs=150, batch_size=64)
 
-# Função para fazer um movimento
+
 def fazer_movimento(tabu):
     tabu_input = (tabu / 2).reshape((1, 1, 9))  
     prediction = modelo.predict(tabu_input)
@@ -76,7 +75,7 @@ def fazer_movimento(tabu):
         movimento = np.argmax(prediction)
     return movimento
 
-# Jogo da Velha com IA
+
 class Jogo_da_VelhaAPP:
     def __init__(self, root):
         self.root = root
