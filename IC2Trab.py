@@ -1,11 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Definição das variáveis fuzzy
-idade = np.linspace(0, 100, 100)  # Idade do falecido
-custo_funerario = np.linspace(0, 10000, 100)  # Custo do funeral
+idade = np.linspace(0, 100, 100)  
+custo_funerario = np.linspace(0, 10000, 100)  
 
-# Definição das funções de pertinência triangular
 def triangular(x, a, b, c):
     if x <= a:
         return 0
@@ -16,7 +14,7 @@ def triangular(x, a, b, c):
     else:
         return 0
 
-# Definição das funções de pertinência para idade
+
 def pertinencia_idade(idade_falecido):
     if idade_falecido <= 45:
         return 'baixo'
@@ -25,7 +23,6 @@ def pertinencia_idade(idade_falecido):
     else:
         return 'alto'
 
-# Definição das funções de pertinência para doenças
 def pertinencia_doenca(doenca):
     if doenca == 'grave':
         return 'grave'
@@ -36,7 +33,7 @@ def pertinencia_doenca(doenca):
     else:
         return 'nenhuma'
 
-# Função que determina o risco de mortalidade com base nas regras fuzzy
+
 def calcular_mortalidade(idade_falecido, doenca, historico_familiar):
     idade_cat = pertinencia_idade(idade_falecido)
     doenca_cat = pertinencia_doenca(doenca)
@@ -75,38 +72,32 @@ def calcular_mortalidade(idade_falecido, doenca, historico_familiar):
         else:
             return 'alta'
 
-# Função principal do sistema especialista
+
 def plano_funerario(idade_falecido, custo_funerario_desejado, doenca=None, historico_familiar=None):
-    # Determina o risco de mortalidade
     mortalidade = calcular_mortalidade(idade_falecido, doenca, historico_familiar)
 
-    # Definição dos riscos e seus efeitos no custo
     risco_custo = {
-        'alta': 0.8,      # 80% do custo base
-        'moderada': 0.5,   # 50% do custo base
-        'baixa': 0.2,      # 20% do custo base
+        'alta': 0.8,     
+        'moderada': 0.5,   
+        'baixa': 0.2,      
     }
 
-    # Custo base do funeral
     custo_funerario_calculado = custo_funerario_desejado * risco_custo[mortalidade]
 
-    # Cálculo do custo mensal
-    lucro_minimo = 0.6 * custo_funerario_calculado  # 60% de lucro
-    custo_mensal = custo_funerario_calculado / 12 + lucro_minimo / 12  # Dividir por 12 meses
+    lucro_minimo = 0.6 * custo_funerario_calculado
+    custo_mensal = custo_funerario_calculado / 12 + lucro_minimo / 12  
 
     return custo_funerario_calculado, custo_mensal
 
-# Exemplo de uso (verificar se tá certo)
 idade_falecido = 50
 custo_funerario_desejado = 5000
-doenca = "diabetes"  # Tipo de doença
-historico_familiar = "moderado"  # Histórico familiar
-
+doenca = "diabetes"  
+historico_familiar = "moderado"  
 custo_funerario_calculado, custo_mensal = plano_funerario(idade_falecido, custo_funerario_desejado, doenca, historico_familiar)
 print(f"Custo do funeral calculado: {custo_funerario_calculado:.2f}")
 print(f"Custo mensal do plano funerário: {custo_mensal:.2f}")
 
-# Plotagem das funções de pertinência
+
 plt.plot(idade, [triangular(x, 0, 45, 60) for x in idade], label="Risco Baixo (0-45 anos)")
 plt.plot(idade, [triangular(x, 45, 60, 75) for x in idade], label="Risco Moderado (45-60 anos)")
 plt.plot(idade, [triangular(x, 60, 75, 100) for x in idade], label="Risco Alto (61+ anos)")
