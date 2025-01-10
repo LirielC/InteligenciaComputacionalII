@@ -19,8 +19,8 @@ def perceptron_or(x1, x2, w1=1, w2=1, theta=0.5):
     else:
         return 0
 
-# Testando a função
-print(perceptron_or(0, 0))  # Esperado: 0 (0 OR 0)
-print(perceptron_or(0, 1))  # Esperado: 1 (0 OR 1)
-print(perceptron_or(1, 0))  # Esperado: 1 (1 OR 0)
-print(perceptron_or(1, 1))  # Esperado: 1 (1 OR 1)
+
+print(perceptron_or(0, 0))  
+print(perceptron_or(0, 1))  
+print(perceptron_or(1, 0))  
+print(perceptron_or(1, 1))  
