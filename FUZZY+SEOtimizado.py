@@ -8,18 +8,16 @@ class SistemaPrevisaoFalecimento:
         self.criar_variaveis()
         self.criar_regras()
         self.criar_sistema_controle()
-        self.pesos = {'idade': 1, 'doenca': 1, 'historico': 0.5}  # Peso do histórico é metade do peso da doença
+        self.pesos = {'idade': 1, 'doenca': 1, 'historico': 0.5}  
 
     def criar_variaveis(self):
-        # Variáveis de entrada
+  
         self.idade = ctrl.Antecedent(np.arange(0, 101, 1), 'idade')
         self.doenca = ctrl.Antecedent(np.arange(0, 11, 1), 'doenca')
         self.historico = ctrl.Antecedent(np.arange(0, 11, 1), 'historico')
 
-        # Variável de saída
         self.idade_falecimento = ctrl.Consequent(np.arange(0, 121, 1), 'idade_falecimento')
 
-        # Funções de pertinência
         self.idade['jovem'] = fuzz.trimf(self.idade.universe, [0, 0, 30])
         self.idade['adulto'] = fuzz.trimf(self.idade.universe, [25, 50, 75])
         self.idade['idoso'] = fuzz.trimf(self.idade.universe, [65, 80, 100])
@@ -65,9 +63,9 @@ class SistemaPrevisaoFalecimento:
             sistema.compute()
             idade_falecimento_base = sistema.output['idade_falecimento']
 
-            # Aplicar os pesos para ajustar a idade de falecimento
-            ajuste_doenca = (doenca_input - 5) * self.pesos['doenca']  # 5 é o valor médio da escala de doença
-            ajuste_historico = (historico_input - 5) * self.pesos['historico']  # 5 é o valor médio da escala de histórico
+          
+            ajuste_doenca = (doenca_input - 5) * self.pesos['doenca']  
+            ajuste_historico = (historico_input - 5) * self.pesos['historico']  
 
             idade_falecimento_ajustada = idade_falecimento_base - ajuste_doenca - ajuste_historico
 
@@ -110,7 +108,7 @@ class CalculadoraPlanoFunerario:
         anos_restantes = max(0, idade_falecimento_prevista - idade_atual)
 
         if anos_restantes < 1:
-            valor_mensal = (self.taxa_anual * 1.7) / 12  # Aumento de 70%
+            valor_mensal = (self.taxa_anual * 1.7) / 12  
         elif anos_restantes > 0:
             valor_total = self.taxa_anual * anos_restantes
             valor_mensal = valor_total / (anos_restantes * 12)
